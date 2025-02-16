@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Account Deletion</title>
+</head>
+<body>
+    <h1>Request Account Deletion</h1>
+    <form id="deletionRequestForm">
+        <label for="reason">Reason for Deletion:</label>
+        <textarea id="reason" name="reason" required></textarea>
+        <button type="submit">Request Account Deletion</button>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+        const supabaseUrl = 'https://your-project-ref.supabase.co';
+        const supabaseKey = 'your-anon-key';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        document.getElementById('deletionRequestForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const reason = document.getElementById('reason').value;
+
+            const { data, error } = await supabase
+                .from('deletion_requests')
+                .insert([
+                    { user_id: supabase.auth.user().id, reason: reason }
+                ]);
+
+            if (error) {
+                console.error('Error requesting deletion:', error);
+                alert('There was an error processing your request. Please try again.');
+            } else {
+                alert('Your account deletion request has been submitted.');
+            }
+        });
+    </script>
+</body>
+</html>
